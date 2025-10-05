@@ -1,11 +1,11 @@
-# このプログラムは実行失敗する。
-
 from dotenv import load_dotenv
 import os
+from langchain.globals import set_debug
 from langchain_aws import ChatBedrock
 from langchain_core.messages import HumanMessage, SystemMessage
 
 load_dotenv()
+#set_debug(True)
 
 chat = ChatBedrock(
   model_id=os.getenv("CLAUDE4.5_INFERENCE_PROFILE_ARN"),
@@ -14,6 +14,7 @@ chat = ChatBedrock(
   model_kwargs={
     "max_tokens": 1000,
   },
+  streaming=True,
 )
 
 messages = [
@@ -21,6 +22,9 @@ messages = [
   HumanMessage(content="東京の天気は？"),
 ]
 
-response = chat.invoke(messages)
+for chunk in chat.stream(messages):
+    print(chunk.content, end="", flush=True)
+print("")
 
-print(response.content)
+#response = chat.invoke(messages)
+#print(response.content)
