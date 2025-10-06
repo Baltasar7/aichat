@@ -56,11 +56,11 @@ if prompt := st.chat_input("質問を入力してください。"):
   with st.chat_message("assistant"):
     response = st.write_stream(
       st.session_state.chain.stream(
-      {
-        "messages": st.session_state.history.messages,
-        "human_message": [HumanMessage(content=prompt)],
-      },
-      config={"configurable": {"session_id": st.session_state.session_id}},
+        {
+          "messages": st.session_state.history.messages,
+          "human_message": [HumanMessage(content=prompt)],
+        },
+        config={"configurable": {"session_id": st.session_state.session_id}},
       )
     )
 
