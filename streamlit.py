@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 from langchain.globals import set_debug
 from langchain_aws import ChatBedrock
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 import streamlit as st
 
 load_dotenv()
@@ -20,15 +20,22 @@ chat = ChatBedrock(
   streaming=True,
 )
 
-messages = [
-  SystemMessage(content="あなたのタスクはユーザーの質問に答えることです。"),
-]
+if "messages" not in st.session_state:
+  st.session_state.messages = [
+    SystemMessage(content="あなたのタスクはユーザーの質問に答えることです。"),
+  ]
+
+for message in st.session_state.messages:
+  if message.type != "system":
+    with st.chat_message(message.type):
+      st.markdown(message.content)
 
 if prompt := st.chat_input("質問を入力してください。"):
-    messages.append(HumanMessage(content=prompt))
+  st.session_state.messages.append(HumanMessage(content=prompt))
 
-    with st.chat_message("user"):
-      st.markdown(prompt)
+  with st.chat_message("user"):
+    st.markdown(prompt)
 
-    with st.chat_message("assistant"):
-      st.write_stream(chat.stream(messages))
+  with st.chat_message("assistant"):
+    response = st.write_stream(chat.stream(st.session_state.messages))
+  st.session_state.messages.append(AIMessage(content=response))
