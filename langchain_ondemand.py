@@ -7,7 +7,7 @@ load_dotenv()
 
 chat = ChatBedrock(
   model_id="anthropic.claude-3-5-sonnet-20240620-v1:0",
-  region_name=os.getenv("AWS_DEFAULT_REGION"),
+  region_name="ap-northeast-1",
   model_kwargs={
     "max_tokens": 1000,
   },

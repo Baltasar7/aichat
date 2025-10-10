@@ -6,14 +6,14 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 import streamlit as st
 
 load_dotenv()
-#set_debug(True)
+set_debug(True)
 
 st.title("Bedrock Chat with Claude 4.5 Inference Profile")
 
 chat = ChatBedrock(
-  model_id=os.getenv("CLAUDE4.5_INFERENCE_PROFILE_ARN"),
+  model_id=os.getenv("CLAUDE4.5_INFERENCE_PROFILE_APNE1_ARN"),
   provider="anthropic",
-  region_name=os.getenv("AWS_DEFAULT_REGION"),
+  region_name="ap-northeast-1",
   model_kwargs={
     "max_tokens": 1000,
   },
