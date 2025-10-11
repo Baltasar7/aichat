@@ -12,17 +12,37 @@ import streamlit as st
 load_dotenv()
 set_debug(True)
 
-boto3.setup_default_session(region_name="us-east-1")
+aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
+aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+aws_region = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
+session = boto3.Session(
+  aws_access_key_id=aws_access_key_id,
+  aws_secret_access_key=aws_secret_access_key,
+  region_name=aws_region
+)
 
 retriever = AmazonKnowledgeBasesRetriever(
   knowledge_base_id=os.getenv("KNOWLEDGE_BASE_ID"),
+  client=session.client("bedrock-agent-runtime", region_name=aws_region),
   retrieval_config={
     "vectorSearchConfiguration": {"numberOfResults": 10}
   }
 )
 
-prompt = ChatPromptTemplate.from_template(
-  "以下のcontextに基づいて回答してください： {context} / 質問： {question}"
+prompt = ChatPromptTemplate.from_template("""
+あなたはAIアシスタントです。
+
+次のcontextが質問に役立つかどうかをまず判断してください：
+{context}
+
+質問：
+{question}
+
+- contextが質問に関連する場合は、contextの情報を用いて回答してください。
+- contextが質問に関連しない場合は、contextを無視して、通常の知識で回答してください。
+- 必ず関連性に応じてcontextの使用有無を判断してください。
+- 回答する際に、contextを利用したことや、無視したことを明示しないでください。
+"""
 )
 
 model = ChatBedrock(
