@@ -1,11 +1,11 @@
 from dotenv import load_dotenv
 import os
-from langchain.globals import set_debug
+from langchain import globals
 from langchain_aws import ChatBedrock
 from langchain_core.messages import HumanMessage, SystemMessage
 
 load_dotenv()
-#set_debug(True)
+#globals.set_debug(True)
 
 chat = ChatBedrock(
   model_id=os.getenv("CLAUDE4.5_INFERENCE_PROFILE_APNE1_ARN"),

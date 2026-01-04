@@ -1,0 +1,14 @@
+[project]
+name = "aichat"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "boto3>=1.42.21",
+    "langchain>=1.2.0",
+    "langchain-aws>=1.2.0",
+    "langchain-community>=0.4.1",
+    "python-dateutil>=2.9.0.post0",
+    "streamlit>=1.52.2",
+]

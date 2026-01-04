@@ -1,7 +1,7 @@
 import os
 import boto3
 from dotenv import load_dotenv
-from langchain.globals import set_debug
+from langchain import globals
 from langchain_aws import ChatBedrock
 from langchain_aws.retrievers import AmazonKnowledgeBasesRetriever
 from langchain_core.output_parsers import StrOutputParser
@@ -10,7 +10,7 @@ from langchain_core.runnables import RunnablePassthrough
 import streamlit as st
 
 load_dotenv()
-set_debug(True)
+globals.set_debug(True)
 
 aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")

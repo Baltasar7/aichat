@@ -1,7 +1,7 @@
 import os
 import boto3
 from dotenv import load_dotenv
-from langchain.globals import set_debug
+from langchain import globals
 from langchain_aws import ChatBedrock
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -9,7 +9,7 @@ from langchain_community.chat_message_histories import DynamoDBChatMessageHistor
 import streamlit as st
 
 load_dotenv()
-set_debug(True)
+globals.set_debug(True)
 
 boto3.setup_default_session(region_name="ap-northeast-1")
 

@@ -1,12 +1,12 @@
 from dotenv import load_dotenv
 import os
-from langchain.globals import set_debug
+from langchain import globals
 from langchain_aws import ChatBedrock
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 import streamlit as st
 
 load_dotenv()
-set_debug(True)
+globals.set_debug(True)
 
 st.title("Bedrock Chat with Claude 4.5 Inference Profile")
 
