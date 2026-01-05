@@ -1,15 +1,15 @@
 import os
 import boto3
 from dotenv import load_dotenv
-from langchain import globals
 from langchain_aws import ChatBedrock
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import DynamoDBChatMessageHistory
+from langchain_core.globals import set_debug
 import streamlit as st
 
 load_dotenv()
-globals.set_debug(True)
+set_debug(True)
 
 boto3.setup_default_session(region_name="ap-northeast-1")
 
