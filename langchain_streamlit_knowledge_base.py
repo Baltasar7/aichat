@@ -15,6 +15,8 @@ set_debug(True)
 aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 aws_region = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
+bedrock_model_id=os.getenv("CLAUDE4.5_INFERENCE_PROFILE_USEAST1_ARN")
+model_provider="anthropic"
 session = boto3.Session(
   aws_access_key_id=aws_access_key_id,
   aws_secret_access_key=aws_secret_access_key,
@@ -46,9 +48,9 @@ prompt = ChatPromptTemplate.from_template("""
 )
 
 model = ChatBedrock(
-  model_id=os.getenv("CLAUDE4.5_INFERENCE_PROFILE_USEAST1_ARN"),
-  provider="anthropic",
-  region_name="us-east-1",
+  model_id=bedrock_model_id,
+  provider=model_provider,
+  region_name=aws_region,
   model_kwargs={
     "max_tokens": 1000,
   },
@@ -61,7 +63,7 @@ chain = (
   | StrOutputParser()
 )
 
-st.title("両国のカフェにちょっと詳しいClaude君")
+st.title("両国のカフェにちょっと詳しいClaudeくん")
 question = st.text_input("質問を入力してください")
 button = st.button("質問する")
 
