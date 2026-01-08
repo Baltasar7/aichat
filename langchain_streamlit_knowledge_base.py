@@ -64,7 +64,7 @@ chain = (
 )
 
 st.title("両国のカフェにちょっと詳しいClaudeくん")
-question = st.text_input("質問を入力してください")
+question = st.text_input("質問を入力してください。両国のカフェについて質問すると、管理者がRAGデータとして登録したおすすめのお店について詳しく解説してくれます。その他の質問に対しては標準のClaude4.5-sonnetが生成した回答を返します。")
 button = st.button("質問する")
 
 if button:
