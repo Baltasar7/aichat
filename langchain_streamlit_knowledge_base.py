@@ -1,6 +1,5 @@
 import os
 import boto3
-from dotenv import load_dotenv
 from langchain_aws import ChatBedrock
 from langchain_aws.retrievers import AmazonKnowledgeBasesRetriever
 from langchain_core.output_parsers import StrOutputParser
@@ -9,14 +8,31 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.globals import set_debug
 import streamlit as st
 
-load_dotenv()
 set_debug(True)
 
-aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
-aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
-aws_region = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
-bedrock_model_id=os.getenv("CLAUDE4.5_INFERENCE_PROFILE_USEAST1_ARN")
-model_provider="anthropic"
+# SSM Parameter Store からパラメータを取得する
+# iactool と stage は ECS タスク定義の環境変数から取得
+iactool = os.getenv("IACTOOL", "terraform")
+stage = os.getenv("STAGE", "dev")
+ssm_prefix = f"/ecs-streamlit-{iactool}/{stage}"
+
+_init_region = os.getenv("AWS_DEFAULT_REGION", "us-east-1")
+_ssm_client = boto3.client("ssm", region_name=_init_region)
+
+def get_ssm_parameter(name: str) -> str:
+  response = _ssm_client.get_parameter(
+    Name=f"{ssm_prefix}/{name}",
+    WithDecryption=True
+  )
+  return response["Parameter"]["Value"]
+
+aws_access_key_id = get_ssm_parameter("aws_access_key_id")
+aws_secret_access_key = get_ssm_parameter("aws_secret_access_key")
+aws_region = get_ssm_parameter("aws_default_region")
+bedrock_model_id = get_ssm_parameter("claude45_inference_profile_useast1_arn")
+knowledge_base_id = get_ssm_parameter("knowledge_base_id")
+
+model_provider = "anthropic"
 session = boto3.Session(
   aws_access_key_id=aws_access_key_id,
   aws_secret_access_key=aws_secret_access_key,
@@ -24,7 +40,7 @@ session = boto3.Session(
 )
 
 retriever = AmazonKnowledgeBasesRetriever(
-  knowledge_base_id=os.getenv("KNOWLEDGE_BASE_ID"),
+  knowledge_base_id=knowledge_base_id,
   client=session.client("bedrock-agent-runtime", region_name=aws_region),
   retrieval_config={
     "vectorSearchConfiguration": {"numberOfResults": 10}
